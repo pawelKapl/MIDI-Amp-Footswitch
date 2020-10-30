@@ -51,6 +51,22 @@
 #define MIDI_RX_BUF_MASK (MIDI_RX_BUF_SIZE - 1)
 #define MIDI_CTRL_CHANGE	0xB0
 
+/* Structure of channel setting pins (see 'confing.c') */
+struct init_ch {
+	
+	/* Array of channel setting pins positions */
+	const uint8_t pos[4];
+
+	/* Pin */
+	volatile uint8_t *const	pin;
+	
+	/* Direction register */
+	volatile uint8_t *const ddr;
+	
+	/* Input Port */
+	volatile uint8_t *const port;
+};
+
 /* Specific footswitch configuration structure (see `config.c`) */
 struct cfg_fs {
 	/* Switch configuration */
@@ -75,22 +91,10 @@ struct cfg_fs {
 
 	/* MIDI configuration */
 	struct {
-		/* Channel (1 to 16) */
-		const uint8_t channel;
 
 		/* CC number to use */
 		const uint8_t cc_number;
-
-		/*
-		 * Footswitch's "on" and "off" MIDI CC values (0 to 127)
-		 * to send.
-		 *
-		 * Note that footswitches are mostly used to _bypass_
-		 * virtual stomp boxes. Most applications assume that a
-		 * full MIDI CC value (127) means "bypass", which means
-		 * the stomp box is bypassed (off) when sending 127 and
-		 * on when sending 0.
-		 */
+		
 		const uint8_t on_cc_val;
 		const uint8_t off_cc_val;
 	} midi;

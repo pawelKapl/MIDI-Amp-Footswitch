@@ -17,10 +17,34 @@ struct fs {
 };
 
 extern const struct cfg_fs g_cfg[];
+extern const struct init_ch ch_i;
 static struct fs g_fs[CFG_NB_FS];
+static uint8_t MIDI_CH = 1;
 
 
 //=======================================INIT PART
+
+static void set_midi_channel(void)
+{
+	/* Set channel selector ports as high inputs */
+	uint8_t i;
+	for (i = 0; i < 4; ++i)
+	{
+		*ch_i.ddr &= ~_BV(ch_i.pos[i]);
+		*ch_i.port |= _BV(ch_i.pos[i]);
+	}
+	
+	/* Read channel from ports */
+	uint8_t channel = 0;
+	for (i = 0; i < 4; ++i)
+	{
+		if (*ch_i.pin & _BV(ch_i.pos[i]))
+		{
+			channel |= (1 << i);
+		}
+	}
+	MIDI_CH = channel;
+}
 
 static void init_uart(void)
 {
@@ -30,6 +54,9 @@ static void init_uart(void)
 	
 	UCSRB = (1<<RXEN)|(1<<TXEN)|(1<<RXCIE); 
 	UCSRC =  (1<<URSEL)|(1<<USBS)|(3<<UCSZ0);
+	
+	set_midi_channel();
+	
 }
 
 static void init_io(void)
@@ -269,7 +296,7 @@ void MIDIhandling(void)
 		{
 			case CTRL_CHANGE:  //MIDI incoming byte
 				if((receivedByte & 0xF0) == MIDI_CTRL_CHANGE 
-				&& (receivedByte & 0x0F) == g_cfg[0].midi.channel - 1)
+				&& (receivedByte & 0x0F) == MIDI_CH - 1)
 				MIDIstatus = CTRL_NUMBER;
 				break;
 

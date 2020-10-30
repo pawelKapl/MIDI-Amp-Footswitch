@@ -1,8 +1,3 @@
-# this Makefile builds avr-midi-footswitch.
-#
-# "make program" to program the chip using AVRDUDE.
-#
-# author:	Philippe Proulx <eepp.ca>
 
 # sources
 C_SRC = main.c config.c
