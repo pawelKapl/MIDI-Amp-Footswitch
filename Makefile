@@ -5,7 +5,7 @@ H_SRC = config.h
 
 # target MCU
 MCU = atmega8
-F_CPU =   10000000
+F_CPU =   16000000
 
 # targets
 TARGET = avr-midi-footswitch

@@ -80,7 +80,7 @@ static void init_io(void)
 }
 
 
-//==============================================Switching
+//===============================================Switching
 
 static inline void turnOffAllMomentaryPins(const struct cfg_fs * const cfg)
 {
@@ -182,13 +182,20 @@ static void check_and_update_fs(const uint8_t index)
 
 	if (cfg->sw.is_momentary) 
 	{
-		_delay_ms(DEB_TIME_DBL);
+		
 		sw_is_on = is_switch_on(index);
 		if (sw_is_on != fsc->is_on) 
 		{
-			fsc->is_on = sw_is_on;	
-			channel_change(cfg, fsc->is_on);
-			fsc->is_on = !sw_is_on;	
+			
+			_delay_ms(DEB_TIME_DBL);
+			
+			/* if still on, after debounce time - preventing contacts bouncing on button */
+			if (sw_is_on != fsc->is_on) 
+			{
+				fsc->is_on = sw_is_on;	
+				channel_change(cfg, fsc->is_on);
+				fsc->is_on = !sw_is_on;	
+			}
 		}
 	} 
 	else
@@ -327,11 +334,12 @@ void MIDIhandling(void)
 static void run(void)
 {
 	for (;;) {
+		MIDIhandling();
 		uint8_t i;
 		for (i = 0; i < CFG_NB_FS; ++i) {
 			check_and_update_fs(i);
 		}
-		MIDIhandling();
+		
 	}
 }
 

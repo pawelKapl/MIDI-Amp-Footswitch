@@ -40,14 +40,14 @@
 #define CFG_NB_FS		4
 
 /* Default channel enabled */
-#define DEF_FS_ON		PC5
+#define DEF_FS_ON		PC3
 
 #define BAUD	31250
 
 /* UART configuration depending on your specific MCU */
 #define CFG_UART_BAUD_RATE_VAL	(F_CPU/16/BAUD-1)
 
-#define MIDI_RX_BUF_SIZE	64
+#define MIDI_RX_BUF_SIZE	32
 #define MIDI_RX_BUF_MASK (MIDI_RX_BUF_SIZE - 1)
 #define MIDI_CTRL_CHANGE	0xB0
 
